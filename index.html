@@ -1,11 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake Classic</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="img/favicon1.png" type="image/x-icon" />
 </head>
+
 <body>
-    <div class=""> </div>
+    <main class="game-container">
+
+        <h1 class="title">SNAKE CLASSIC</h1>
+
+        <div class="hud">
+            <p>Score: <span id="score">0</span></p>
+        </div>
+
+        <div id="startScreen" class="overlay active">
+            <h2>SNAKE CLASSIC</h2>
+            <p class="blink">PRESS ENTER TO START</p>
+        </div>
+
+        
+        <div id="difficultyScreen" class="overlay">
+            <h2>SELECT DIFFICULTY</h2>
+            <ul class="difficulty-list">
+                <li id="easy" class="active">Easy</li>
+                <li id="normal">Normal</li>
+                <li id="hard">Hard</li>
+            </ul>
+            <p class="blink">PRESS ENTER</p>
+        </div>
+
+
+        <div id="gameOverScreen" class="overlay">
+            <h2>GAME OVER</h2>
+            <p>Score: <span id="finalScore">0</span></p>
+            <p class="blink">PRESS ENTER TO RESTART</p>
+        </div>
+
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+        <p class="hint">Usa las flechas para moverte</p>
+
+    </main>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
