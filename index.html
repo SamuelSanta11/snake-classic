@@ -1,54 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Classic</title>
-
-    <link rel="stylesheet" href="style.css" />
-    <link rel="shortcut icon" href="img/favicon1.png" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <main class="game-container">
 
-        <h1 class="title">SNAKE CLASSIC</h1>
+    
+    <div id="startScreen" class="screen">
+        <h1>SNAKE CLASSIC</h1>
+        <p>Presiona <span class="key">ENTER</span> para jugar</p>
+    </div>
 
-        <div class="hud">
-            <p>Score: <span id="score">0</span></p>
-        </div>
+    
+    <div id="difficultyScreen" class="screen">
+        <h2>DIFICULTAD</h2>
+        <div id="easy" class="difficulty-option">Fácil</div>
+        <div id="normal" class="difficulty-option">Normal</div>
+        <div id="hard" class="difficulty-option">Difícil</div>
+    </div>
 
-        <div id="startScreen" class="overlay active">
-            <h2>SNAKE CLASSIC</h2>
-            <p class="blink">PRESS ENTER TO START</p>
-        </div>
-
-        
-        <div id="difficultyScreen" class="overlay">
-            <h2>SELECT DIFFICULTY</h2>
-            <ul class="difficulty-list">
-                <li id="easy" class="active">Easy</li>
-                <li id="normal">Normal</li>
-                <li id="hard">Hard</li>
-            </ul>
-            <p class="blink">PRESS ENTER</p>
-        </div>
-
-
-        <div id="gameOverScreen" class="overlay">
-            <h2>GAME OVER</h2>
-            <p>Score: <span id="finalScore">0</span></p>
-            <p class="blink">PRESS ENTER TO RESTART</p>
-        </div>
-
+    
+    <div id="gameScreen" class="screen">
+        <div class="score-board">SCORE: <span id="scoreValue">0</span></div>
         <canvas id="gameCanvas" width="400" height="400"></canvas>
-
-        <p class="hint">Usa las flechas para moverte</p>
-
-    </main>
+        <p class="controls-hint">Usa las flechas ⬆️⬇️⬅️➡️ para moverte</p>
+    </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>

@@ -1,5 +1,6 @@
 const startScreen = document.getElementById("startScreen");
 const difficultyScreen = document.getElementById("difficultyScreen");
+const gameScreen = document.getElementById("gameScreen");
 const gameCanvas = document.getElementById("gameCanvas");
 
 let gameState = "start";
@@ -8,30 +9,53 @@ let selectedDifficulty = 0;
 const difficulties = ["easy", "normal", "hard"];
 
 document.addEventListener("keydown", (e) => {
+
     if (["ArrowUp", "ArrowDown", "Enter"].includes(e.key)) {
         e.preventDefault();
     }
 
-    if (gameState === "start" && e.key === "Enter") {
-        openDifficultyMenu();
-        return;
-    }
+    switch (gameState) {
 
-    if (gameState === "difficulty") {
-        handleDifficultyInput(e.key);
+        case "start":
+            if (e.key === "Enter") {
+                showScreen("difficulty");
+            }
+            break;
+
+        case "difficulty":
+            handleDifficultyInput(e.key);
+            break;
+
+        case "playing":
+            // Aquí luego irá movimiento snake
+            break;
     }
 });
 
+function showScreen(state) {
 
+    startScreen.classList.remove("active");
+    difficultyScreen.classList.remove("active");
+    gameScreen.classList.remove("active");
 
-function openDifficultyMenu() {
-    startScreen.style.display = "none";
-    difficultyScreen.style.display = "flex";
-    gameState = "difficulty";
-    updateDifficultyUI();
+    gameState = state;
+
+    if (state === "start") {
+        startScreen.classList.add("active");
+    }
+
+    if (state === "difficulty") {
+        difficultyScreen.classList.add("active");
+        updateDifficultyUI();
+    }
+
+    if (state === "playing") {
+        gameScreen.classList.add("active");
+    }
 }
 
 function handleDifficultyInput(key) {
+
     if (key === "ArrowUp") {
         selectedDifficulty =
             (selectedDifficulty - 1 + difficulties.length) % difficulties.length;
@@ -44,6 +68,7 @@ function handleDifficultyInput(key) {
 
     if (key === "Enter") {
         startGame();
+        return;
     }
 
     updateDifficultyUI();
@@ -52,18 +77,14 @@ function handleDifficultyInput(key) {
 function updateDifficultyUI() {
     difficulties.forEach((level, index) => {
         const element = document.getElementById(level);
-        element.classList.remove("active");
-
-        if (index === selectedDifficulty) {
-            element.classList.add("active");
-        }
+        element.classList.toggle("active", index === selectedDifficulty);
     });
 }
 
 function startGame() {
-    difficultyScreen.style.display = "none";
-    gameCanvas.style.display = "block";
-    gameState = "playing";
-
     console.log("Dificultad seleccionada:", difficulties[selectedDifficulty]);
+    showScreen("playing");
 }
+
+// Inicializar el juego en la pantalla de inicio
+showScreen("start");
