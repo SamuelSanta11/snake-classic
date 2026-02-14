@@ -1,25 +1,36 @@
-const startScreen = document.getElementById("startScreen");
+const startScreen = document.getElementById("startScreen"); 
 const difficultyScreen = document.getElementById("difficultyScreen");
 const gameScreen = document.getElementById("gameScreen");
-const gameCanvas = document.getElementById("gameCanvas");
 
 let gameState = "start";
 let selectedDifficulty = 0;
 
 const difficulties = ["easy", "normal", "hard"];
 
-document.addEventListener("keydown", (e) => {
+const gameCanvas = document.getElementById("gameCanvas");
+const ctx = gameCanvas.getContext("2d");
 
-    if (["ArrowUp", "ArrowDown", "Enter"].includes(e.key)) {
+const boxSize = 20;
+const canvasSize = 400;
+const tiles = canvasSize / boxSize;
+
+let snake = [];
+let direction = "right";
+let food = null;
+let gameInterval = null;
+
+document.addEventListener("keydown", handleKeyPress);
+
+function handleKeyPress(e) {
+
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(e.key)) {
         e.preventDefault();
     }
 
     switch (gameState) {
 
         case "start":
-            if (e.key === "Enter") {
-                showScreen("difficulty");
-            }
+            if (e.key === "Enter") showScreen("difficulty");
             break;
 
         case "difficulty":
@@ -27,30 +38,38 @@ document.addEventListener("keydown", (e) => {
             break;
 
         case "playing":
-            // Aquí luego irá movimiento snake
+            handleGameInput(e.key);
             break;
     }
-});
+}
+
+function handleGameInput(key) {
+
+    if (key === "ArrowUp" && direction !== "down") direction = "up";
+    if (key === "ArrowDown" && direction !== "up") direction = "down";
+    if (key === "ArrowLeft" && direction !== "right") direction = "left";
+    if (key === "ArrowRight" && direction !== "left") direction = "right";
+}
 
 function showScreen(state) {
 
-    startScreen.classList.remove("active");
-    difficultyScreen.classList.remove("active");
-    gameScreen.classList.remove("active");
+    startScreen.style.display = "none";
+    difficultyScreen.style.display = "none";
+    gameScreen.style.display = "none";
 
     gameState = state;
 
     if (state === "start") {
-        startScreen.classList.add("active");
+        startScreen.style.display = "flex";
     }
 
     if (state === "difficulty") {
-        difficultyScreen.classList.add("active");
+        difficultyScreen.style.display = "flex";
         updateDifficultyUI();
     }
 
     if (state === "playing") {
-        gameScreen.classList.add("active");
+        gameScreen.style.display = "flex";
     }
 }
 
@@ -81,10 +100,95 @@ function updateDifficultyUI() {
     });
 }
 
-function startGame() {
-    console.log("Dificultad seleccionada:", difficulties[selectedDifficulty]);
-    showScreen("playing");
+
+
+function gameLoop() {
+    clearCanvas();
+    moveSnake();
+    checkFoodCollision();
+    drawFood();
+    drawSnake();
 }
 
-// Inicializar el juego en la pantalla de inicio
+function moveSnake() {
+
+    const head = { ...snake[0] };
+
+    if (direction === "up") head.y--;
+    if (direction === "down") head.y++;
+    if (direction === "left") head.x--;
+    if (direction === "right") head.x++;
+
+    snake.unshift(head);
+    snake.pop();
+}
+
+function drawSnake() {
+    ctx.fillStyle = "lime";
+
+    snake.forEach(segment => {
+        ctx.fillRect(
+            segment.x * boxSize,
+            segment.y * boxSize,
+            boxSize,
+            boxSize
+        );
+    });
+}
+
+function clearCanvas() {
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
+}
+
+
+
+function generateFood() {
+    return {
+        x: Math.floor(Math.random() * tiles),
+        y: Math.floor(Math.random() * tiles),
+        color: getRandomColor()
+    };
+}
+
+function getRandomColor() {
+    const colors = ["red", "yellow", "blue", "purple"];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function drawFood() {
+    if (!food) return;
+
+    ctx.fillStyle = food.color;
+    ctx.fillRect(
+        food.x * boxSize,
+        food.y * boxSize,
+        boxSize,
+        boxSize
+    );
+}
+
+function checkFoodCollision() {
+    const head = snake[0];
+
+    if (food && head.x === food.x && head.y === food.y) {
+        snake.push({}); // crecer
+        food = generateFood();
+    }
+}
+
+
+function startGame() {
+
+    showScreen("playing");
+
+    snake = [{ x: 10, y: 10 }];
+    direction = "right";
+    food = generateFood();
+
+    clearInterval(gameInterval);
+    gameInterval = setInterval(gameLoop, 200);
+}
+
+
 showScreen("start");
