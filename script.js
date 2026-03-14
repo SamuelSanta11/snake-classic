@@ -1,6 +1,9 @@
-const startScreen = document.getElementById("startScreen"); 
+const startScreen = document.getElementById("startScreen");
 const difficultyScreen = document.getElementById("difficultyScreen");
 const gameScreen = document.getElementById("gameScreen");
+const restartBtn = document.getElementById("restartBtn");
+const exitBtn = document.getElementById("exitBtn");
+const gameOverModal = document.getElementById("gameOverModal");
 
 let gameState = "start";
 let selectedDifficulty = 0;
@@ -16,6 +19,7 @@ const tiles = canvasSize / boxSize;
 
 let snake = [];
 let direction = "right";
+let lastDirection = "right";
 let food = null;
 let gameInterval = null;
 
@@ -45,10 +49,10 @@ function handleKeyPress(e) {
 
 function handleGameInput(key) {
 
-    if (key === "ArrowUp" && direction !== "down") direction = "up";
-    if (key === "ArrowDown" && direction !== "up") direction = "down";
-    if (key === "ArrowLeft" && direction !== "right") direction = "left";
-    if (key === "ArrowRight" && direction !== "left") direction = "right";
+    if (key === "ArrowUp" && lastDirection !== "down") direction = "up";
+    if (key === "ArrowDown" && lastDirection !== "up") direction = "down";
+    if (key === "ArrowLeft" && lastDirection !== "right") direction = "left";
+    if (key === "ArrowRight" && lastDirection !== "left") direction = "right";
 }
 
 function showScreen(state) {
@@ -56,6 +60,7 @@ function showScreen(state) {
     startScreen.style.display = "none";
     difficultyScreen.style.display = "none";
     gameScreen.style.display = "none";
+    if (gameOverModal) gameOverModal.style.display = "none";
 
     gameState = state;
 
@@ -97,6 +102,10 @@ function updateDifficultyUI() {
     difficulties.forEach((level, index) => {
         const element = document.getElementById(level);
         element.classList.toggle("active", index === selectedDifficulty);
+        element.onclick = () => {
+            selectedDifficulty = index;
+            startGame();
+        };
     });
 }
 
@@ -105,10 +114,14 @@ function updateDifficultyUI() {
 function gameLoop() {
     clearCanvas();
     moveSnake();
+    lastDirection = direction;
+    checkCollision();
     checkFoodCollision();
     drawFood();
     drawSnake();
 }
+
+
 
 function moveSnake() {
 
@@ -123,6 +136,50 @@ function moveSnake() {
     snake.pop();
 }
 
+
+
+function checkCollision() {
+
+    const head = snake[0];
+
+    
+    if (
+        head.x < 0 ||
+        head.x >= tiles ||
+        head.y < 0 ||
+        head.y >= tiles
+    ) {
+        gameOver();
+    }
+
+    
+    for (let i = 1; i < snake.length; i++) {
+
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+            gameOver();
+        }
+
+    }
+}
+
+
+function gameOver() {
+
+    clearInterval(gameInterval);
+
+    gameOverModal.style.display = "flex";
+}
+
+restartBtn.addEventListener("click", () => {
+    gameOverModal.style.display = "none";
+    startGame();
+});
+
+exitBtn.addEventListener("click", () => {
+    gameOverModal.style.display = "none";
+    showScreen("start");
+})
+
 function drawSnake() {
     ctx.fillStyle = "lime";
 
@@ -135,6 +192,8 @@ function drawSnake() {
         );
     });
 }
+
+
 
 function clearCanvas() {
     ctx.fillStyle = "#111";
@@ -151,12 +210,17 @@ function generateFood() {
     };
 }
 
+
+
 function getRandomColor() {
     const colors = ["red", "yellow", "blue", "purple"];
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
+
+
 function drawFood() {
+
     if (!food) return;
 
     ctx.fillStyle = food.color;
@@ -168,14 +232,20 @@ function drawFood() {
     );
 }
 
+
+
 function checkFoodCollision() {
+
     const head = snake[0];
 
     if (food && head.x === food.x && head.y === food.y) {
-        snake.push({}); // crecer
+
+        snake.push({ ...snake[snake.length - 1] });
         food = generateFood();
+
     }
 }
+
 
 
 function startGame() {
@@ -184,11 +254,18 @@ function startGame() {
 
     snake = [{ x: 10, y: 10 }];
     direction = "right";
+    lastDirection = "right";
     food = generateFood();
 
     clearInterval(gameInterval);
-    gameInterval = setInterval(gameLoop, 200);
+    
+    let speed = 200;
+    if (difficulties[selectedDifficulty] === "normal") speed = 150;
+    if (difficulties[selectedDifficulty] === "hard") speed = 100;
+    
+    gameInterval = setInterval(gameLoop, speed);
 }
+
 
 
 showScreen("start");

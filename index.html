@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    
+
     <div id="startScreen" class="screen">
         <h1>SNAKE CLASSIC</h1>
         <p>Presiona <span class="key">ENTER</span> para jugar</p>
     </div>
 
-    
+
     <div id="difficultyScreen" class="screen">
         <h2>DIFICULTAD</h2>
         <div id="easy" class="difficulty-option">Fácil</div>
@@ -23,13 +25,27 @@
         <div id="hard" class="difficulty-option">Difícil</div>
     </div>
 
-    
+
     <div id="gameScreen" class="screen">
         <div class="score-board">SCORE: <span id="scoreValue">0</span></div>
         <canvas id="gameCanvas" width="400" height="400"></canvas>
         <p class="controls-hint">Usa las flechas ⬆️⬇️⬅️➡️ para moverte</p>
     </div>
 
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2>GAME OVER</h2>
+            <p>Que deseas hacer?</p>
+
+            <div class="modal-buttons">
+                <button id="restartBtn">Jugar de nuevo</button>
+                <button id="exitBtn">Salir al menu</button>
+            </div>
+        </div>
+
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
